@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
+import GiphyImage from "./GiphyImage";
 
-const apiUrl = "https://api.giphy.com/v1/gifs/search?api_key=P8FdQGToYGOjUWXkFQ9Tl3ciojtEMtW1&q=laser&limit=25&offset=0&rating=R&lang=en";
+const apiUrl = "https://api.giphy.com/v1/gifs/random?api_key=P8FdQGToYGOjUWXkFQ9Tl3ciojtEMtW1&tag=cat&rating=R";
 
 export default class GiphyApp extends React.Component{
     constructor(props){
@@ -14,7 +15,10 @@ export default class GiphyApp extends React.Component{
     render(){
         return (
             <React.Fragment>
-                <button onClick={this._getGiphy}>heres a button</button>
+                <button onClick={this._getGiphy}>heres a button</button><br />
+                {
+                    this.state.giphies.map(giphy => (<GiphyImage giphy={giphy} />))
+                }
             </React.Fragment>
         );
     }
@@ -23,9 +27,9 @@ export default class GiphyApp extends React.Component{
         console.log("clicks been clicked");
         axios.get(apiUrl)
             .then(response =>{
-                console.log(response.data.data[0].images.downsized_large.url);
+                console.log(response.data.data.images.downsized_large.url);
                 this.setState({
-                    giphies:[...this.state.giphies, response.data.data[0].images.downsized_large]
+                    giphies:[response.data.data.images.downsized_large, ...this.state.giphies]
                 });
             })
             .catch(err => {console.log("no animated gif today.")});
